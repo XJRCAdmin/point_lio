@@ -1,10 +1,8 @@
 # Point-LIO
 
-> ROS2 Fork repo maintainer: [LihanChen2004](https://github.com/LihanChen2004)
+> clone from SBMU robomaster team repo: [LihanChen2004](https://github.com/LihanChen2004)
 
 ## Point-LIO: Robust High-Bandwidth Lidar-Inertial Odometry
-
-## Branch: RM25_SMBU_auto_sentry
 
 - Feats: Prior pcd map input
 
@@ -50,20 +48,17 @@ The codes of this repo are contributed by:
 
 ## **1.2. Related paper**
 
-
 Our paper is published on Advanced Intelligent Systems(AIS). [Point-LIO](https://onlinelibrary.wiley.com/doi/epdf/10.1002/aisy.202200459), DOI: 10.1002/aisy.202200459
 
 ## **1.3. Related video**
 
 Our accompany video is available on **YouTube**.
 
-
 <div align="center">
     <a href="https://youtu.be/oS83xUs42Uw" target="_blank"><img src="https://github.com/hku-mars/Point-LIO/raw/master/image/final.png" width=60% /></a>
 </div>
 
 ## 2. What can Point-LIO do?
-
 
 ### 2.1 Simultaneous LiDAR localization and mapping (SLAM) without motion distortion
 
@@ -91,27 +86,26 @@ sudo apt-get install ros-$ROS_DISTRO-pcl-conversions
 
 Following the official [Eigen installation](eigen.tuxfamily.org/index.php?title=Main_Page), or directly install Eigen by:
 
-```sh
+````sh
 
 ```sh
 sudo apt-get install libeigen3-dev
-```
+````
 
 ### **3.3 livox_ros_driver2**
 
 Follow [livox_ros_driver Installation](https://github.com/Livox-SDK/livox_ros_driver2).
 
-*Remarks:*
+_Remarks:_
 
 - Since the Point-LIO supports Livox serials LiDAR, so the **livox_ros_driver** must be installed and **sourced** before run any Point-LIO luanch file.
-- How to source? The easiest way is add the line ` source $Livox_ros_driver2_dir$/install/setup.bash ` to the end of file ` ~/.bashrc `, where ` $Livox_ros_driver2_dir$ ` is the directory of the livox ros driver workspace (should be the ` ws_livox ` directory if you completely followed the livox official document).
+- How to source? The easiest way is add the line `source $Livox_ros_driver2_dir$/install/setup.bash` to the end of file `~/.bashrc`, where `$Livox_ros_driver2_dir$` is the directory of the livox ros driver workspace (should be the `ws_livox` directory if you completely followed the livox official document).
 
 ## 4. Build
 
-
 Clone the repository and catkin_make:
 
-```sh
+````sh
 ```sh
     cd ~/$A_ROS_DIR$/src
     git clone https://github.com/LihanChen2004/Point-LIO.git
@@ -119,17 +113,17 @@ Clone the repository and catkin_make:
     rosdepc install -r --from-paths src --ignore-src --rosdistro $ROS_DISTRO -
     colcon build --symlink-install -DCMAKE_BUILD_TYPE=Release
     source install/setup.bash # use setup.zsh if use zsh
-```
+````
 
 - Remember to source the livox_ros_driver2 before build (follow 3.3 **livox_ros_driver**)
 - If you want to use a custom build of PCL, add the following line to ~/.bashrc
-`export PCL_ROOT={CUSTOM_PCL_PATH}`
+  `export PCL_ROOT={CUSTOM_PCL_PATH}`
 
 ## 5. Directly run
 
 ### 5.1 For Mid360
 
-Connect to your PC to Livox Mid360 LiDAR by following  [Livox-ros-driver2 installation](https://github.com/Livox-SDK/livox_ros_driver2), then
+Connect to your PC to Livox Mid360 LiDAR by following [Livox-ros-driver2 installation](https://github.com/Livox-SDK/livox_ros_driver2), then
 
 ```sh
     cd ~/$Point_LIO_ROS_DIR$
@@ -137,7 +131,7 @@ Connect to your PC to Livox Mid360 LiDAR by following  [Livox-ros-driver2 instal
     ros2 launch point_lio point_lio.launch.py
 ```
 
-- For livox serials, Point-LIO only support the data collected by the ` msg_mid360_launch.py.launch ` since only its ` livox_ros_driver2/msg/CustomMsg ` data structure produces the timestamp of each LiDAR point which is very important for Point-LIO. ` rviz_mid360_launch.py ` can not produce it right now.
+- For livox serials, Point-LIO only support the data collected by the `msg_mid360_launch.py.launch` since only its `livox_ros_driver2/msg/CustomMsg` data structure produces the timestamp of each LiDAR point which is very important for Point-LIO. `rviz_mid360_launch.py` can not produce it right now.
 
 - If you want to change the frame rate, please modify the **publish_freq** parameter in the [msg_mid360_launch.py.launch](https://github.com/Livox-SDK/livox_ros_driver2/blob/master/launch_ROS2/msg_MID360_launch.py) of [Livox-ros-driver2](https://github.com/Livox-SDK/livox_ros_driver2)
 
@@ -145,45 +139,45 @@ Connect to your PC to Livox Mid360 LiDAR by following  [Livox-ros-driver2 instal
 
 Need to setup some parameters befor run:
 
-Edit ` config/mid360.yaml ` to set the below parameters:
+Edit `config/mid360.yaml` to set the below parameters:
 
-1. LiDAR point cloud topic name: ` lid_topic `
+1. LiDAR point cloud topic name: `lid_topic`
 
-2. IMU topic name: ` imu_topic `
+2. IMU topic name: `imu_topic`
 
-3. Translational extrinsic: ` extrinsic_T `
+3. Translational extrinsic: `extrinsic_T`
 
-4. Rotational extrinsic: ` extrinsic_R ` (only support rotation matrix)
+4. Rotational extrinsic: `extrinsic_R` (only support rotation matrix)
 
-    - The extrinsic parameters in Point-LIO is defined as the LiDAR's pose (position and rotation matrix) in IMU body frame (i.e. the IMU is the base frame). They can be found in the official manual.
+   - The extrinsic parameters in Point-LIO is defined as the LiDAR's pose (position and rotation matrix) in IMU body frame (i.e. the IMU is the base frame). They can be found in the official manual.
 
 5. Saturation value of IMU's accelerator and gyroscope: `satu_acc`, `satu_gyro`
 
-6. The norm of IMU's acceleration according to unit of acceleration messages: ` acc_norm `
+6. The norm of IMU's acceleration according to unit of acceleration messages: `acc_norm`
 
 ### 5.3 For Velodyne or Ouster (Velodyne as an example)
 
 Step A: Setup before run
 
-Edit ` config/veoldy16.yaml ` to set the below parameters:
+Edit `config/veoldy16.yaml` to set the below parameters:
 
-1. LiDAR point cloud topic name: ` lid_topic `
+1. LiDAR point cloud topic name: `lid_topic`
 
-2. IMU topic name: ` imu_topic ` (both internal and external, 6-aixes or 9-axies are fine)
+2. IMU topic name: `imu_topic` (both internal and external, 6-aixes or 9-axies are fine)
 
 3. Set the parameter `timestamp_unit` based on the unit of **time** (Velodyne) or **t** (Ouster) field in PoindCloud2 rostopic
 
-4. Line number (we tested 16, 32 and 64 line, but not tested 128 or above): ` scan_line `
+4. Line number (we tested 16, 32 and 64 line, but not tested 128 or above): `scan_line`
 
-5. Translational extrinsic: ` extrinsic_T `
+5. Translational extrinsic: `extrinsic_T`
 
-6. Rotational extrinsic: ` extrinsic_R ` (only support rotation matrix)
+6. Rotational extrinsic: `extrinsic_R` (only support rotation matrix)
 
-    - The extrinsic parameters in Point-LIO is defined as the LiDAR's pose (position and rotation matrix) in IMU body frame (i.e. the IMU is the base frame).
+   - The extrinsic parameters in Point-LIO is defined as the LiDAR's pose (position and rotation matrix) in IMU body frame (i.e. the IMU is the base frame).
 
 7. Saturation value of IMU's accelerator and gyroscope: `satu_acc`, `satu_gyro`
 
-8. The norm of IMU's acceleration according to unit of acceleration messages: ` acc_norm `
+8. The norm of IMU's acceleration according to unit of acceleration messages: `acc_norm`
 
 Step B: Run below
 
@@ -197,19 +191,19 @@ Step C: Run LiDAR's ros driver or play rosbag.
 
 ### 5.4 PCD file save
 
-Set ` pcd_save_enable ` in launch file to ` 1 `. All the scans (in global frame) will be accumulated and saved to the file ` Point-LIO/PCD/scans.pcd ` after the Point-LIO is terminated. `pcl_viewer scans.pcd` can visualize the point clouds.
+Set `pcd_save_enable` in launch file to `1`. All the scans (in global frame) will be accumulated and saved to the file `Point-LIO/PCD/scans.pcd` after the Point-LIO is terminated. `pcl_viewer scans.pcd` can visualize the point clouds.
 
-*Tips for pcl_viewer:*
+_Tips for pcl_viewer:_
 
 - change what to visualize/color by pressing keyboard 1,2,3,4,5 when pcl_viewer is running.
 
-    `txt
-        1 is all random
-        2 is X values
-        3 is Y values
-        4 is Z values
-        5 is intensity
-    `
+  `txt
+    1 is all random
+    2 is X values
+    3 is Y values
+    4 is Z values
+    5 is intensity
+`
 
 ## **6. Examples**
 
